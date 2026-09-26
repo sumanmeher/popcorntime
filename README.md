@@ -1,6 +1,6 @@
 <div align="center">
   <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Food/Popcorn.png" alt="Popcorn" width="120" height="120" />
-
+  <br />
   <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=800&size=45&pause=1000&color=FFB02E&center=true&vCenter=true&width=500&lines=Popcorn+Time!" alt="Popcorn Time" />
 
 ### Movie Booking Backend System
