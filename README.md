@@ -164,6 +164,16 @@ When multiple users try to book the exact same seat simultaneously, a race condi
 5. If the key is successfully written, a **TTL (Time-To-Live)** of X minutes is attached. The user now has a limited window to complete the payment.
 6. Upon successful payment, the seat is saved permanently to PostgreSQL, and the Redis lock is deleted. If the payment fails or times out, the Redis key expires, freeing the seat for other users.
 
+<br/>
+
+<div align="center">
+  <img src="./assets/redis_temporary_booking.png" alt="Redis Commander showing temporary seat lock and TTL countdown" width="700" />
+  <br>
+  <i>Evidence: Redis Commander Web UI showing active distributed seat lock for user <code>sumanmeher@gmail.com</code> (seats 31 & 32) with a live 6-minute TTL countdown (353s remaining).</i>
+</div>
+
+<br/>
+
 ### 2. Async Email Service - How it Works
 
 Sending an email synchronously during checkout creates massive latency for the end-user. To solve this, PopcornTime uses **RabbitMQ**:
@@ -203,6 +213,20 @@ Sending an email synchronously during checkout creates massive latency for the e
 2. It pushes this payload to a RabbitMQ `email_exchange` and immediately returns a `200 OK HTTP Response` to the client.
 3. The message sits safely in the `email_queue`.
 4. A separate worker/microservice (Email Consumer) listens to this queue, picks up the message, and sends the actual SMTP email in the background without affecting the user's booking experience.
+
+<br/>
+
+<div align="center">
+  <img src="./assets/rabbitmq_overview.png" alt="RabbitMQ Overview showing 1 queued message" width="650" />
+  <br>
+  <i>Evidence: RabbitMQ Management Dashboard showing the live message publish spike and 1 message ready in <code>email_queue</code>.</i>
+  <br><br>
+  <img src="./assets/rabbitmq_message_payload.png" alt="RabbitMQ Message Payload Inspection" width="650" />
+  <br>
+  <i>Evidence: Inspecting the actual message payload in <code>email_queue</code> with user email, total price, and booked seat IDs.</i>
+</div>
+
+<p align="right"><a href="#-table-of-contents">⬆️ Back to Top</a></p>
 
 ---
 
@@ -276,10 +300,14 @@ Sending an email synchronously during checkout creates massive latency for the e
    ```
 3. Run the application via Docker Compose:
    ```bash
-   docker-compose up -d
+   docker compose up -d
    ```
-4. The API will be available at `http://localhost:8080`.
-5. RabbitMQ Management UI (if port 15672 is exposed) will be at `http://localhost:15672`.
+4. Access the running services:
+   - **PopcornTime REST API**: `http://localhost:8080`
+   - **Interactive Swagger Docs**: `http://localhost:8080/swagger-ui.html`
+   - **RabbitMQ Management Dashboard**: `http://localhost:15672` *(User: `guest` / Pass: `guest`)*
+   - **Redis Commander (Web UI)**: `http://localhost:8081`
+   - **PostgreSQL Database**: `localhost:5433` *(Database: `popcorntime`)*
 
 <p align="right"><a href="#-table-of-contents">⬆️ Back to Top</a></p>
 
