@@ -1,10 +1,10 @@
-package com.movienow.org;
+package com.popcorntime.org;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MovienowApplicationTests {
+class PopcorntimeApplicationTests {
 
 	@Test
 	void contextLoads() {
